@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Profile - Flutter Experiment 1 Preview</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Roboto', -apple-system, sans-serif;
+      background-color: #0f172a;
+      color: #1e293b;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    /* Device frame simulator */
+    .device-container {
+      width: 100%;
+      max-width: 410px;
+      height: 820px;
+      background: #f8fafc;
+      border-radius: 36px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 12px #1e293b;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* AppBar (Step 4) */
+    .app-bar {
+      background-color: #e0e7ff;
+      color: #3730a3;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+      z-index: 10;
+    }
+
+    .app-bar-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+      flex-grow: 1;
+      text-align: center;
+      margin-left: 28px;
+    }
+
+    .icon-btn {
+      background: none;
+      border: none;
+      color: #3730a3;
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+    .icon-btn:hover {
+      background: rgba(55, 48, 163, 0.1);
+    }
+
+    /* Main Body Layout (Step 5 - Column) */
+    .app-body {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* Step 6 - Container Widget */
+    .profile-container {
+      margin: 12px;
+      padding: 20px;
+      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+      border-radius: 18px;
+      color: white;
+      text-align: center;
+      box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .avatar {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background-color: rgba(255, 255, 255, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+      box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.3);
+    }
+
+    .avatar .material-icons {
+      font-size: 44px;
+      color: #ffffff;
+    }
+
+    .profile-header-tag {
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      opacity: 0.9;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+    }
+
+    .student-name {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .dept-name {
+      font-size: 0.9rem;
+      opacity: 0.92;
+      margin-bottom: 8px;
+    }
+
+    .lab-badge {
+      background: rgba(255, 255, 255, 0.25);
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      backdrop-filter: blur(4px);
+    }
+
+    /* Step 7 - Row Widget */
+    .nav-card {
+      margin: 4px 12px;
+      background: #ffffff;
+      border-radius: 14px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      padding: 10px 0;
+    }
+
+    .nav-row {
+      display: flex;
+      justify-content: space-evenly;
+      align-items: center;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      padding: 6px 16px;
+      border-radius: 10px;
+      transition: all 0.2s ease;
+      color: #64748b;
+    }
+
+    .nav-item.active {
+      color: #4f46e5;
+      background: #eeef2b1a;
+    }
+
+    .nav-item .material-icons {
+      font-size: 28px;
+      margin-bottom: 2px;
+    }
+
+    .nav-item span {
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+
+    /* Step 8 - Card Widget */
+    .featured-card {
+      margin: 6px 12px;
+      background: #ffffff;
+      border-radius: 14px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+      border-left: 4px solid #4f46e5;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .featured-card:active {
+      transform: scale(0.99);
+    }
+
+    .list-tile {
+      display: flex;
+      align-items: center;
+      padding: 14px 16px;
+    }
+
+    .tile-leading {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: #e0e7ff;
+      color: #4f46e5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 14px;
+      flex-shrink: 0;
+    }
+
+    .tile-content {
+      flex: 1;
+    }
+
+    .tile-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #1e293b;
+    }
+
+    .tile-subtitle {
+      font-size: 0.82rem;
+      color: #64748b;
+      margin-top: 2px;
+    }
+
+    .tile-trailing {
+      color: #94a3b8;
+      font-size: 18px;
+    }
+
+    /* Step 9 - Expanded ListView */
+    .section-heading {
+      margin: 12px 16px 6px 16px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .list-view-expanded {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0 12px 16px 12px;
+    }
+
+    .list-view-expanded::-webkit-scrollbar {
+      width: 4px;
+    }
+    .list-view-expanded::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+
+    .course-card {
+      background: #ffffff;
+      border-radius: 12px;
+      margin-bottom: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .course-card:hover {
+      background: #f1f5f9;
+    }
+
+    .course-code-badge {
+      background: #f1f5f9;
+      color: #475569;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 8px;
+    }
+
+    /* Interactive SnackBar & Modal */
+    .snackbar {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #1e293b;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 24px;
+      font-size: 0.85rem;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      z-index: 100;
+    }
+
+    .snackbar.show {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .modal-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+      z-index: 200;
+      padding: 20px;
+    }
+
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .dialog-box {
+      background: white;
+      width: 100%;
+      max-width: 320px;
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+      transform: scale(0.9);
+      transition: transform 0.25s ease;
+    }
+
+    .modal-overlay.open .dialog-box {
+      transform: scale(1);
+    }
+
+    .dialog-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .dialog-header .material-icons {
+      font-size: 28px;
+    }
+
+    .dialog-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .dialog-body {
+      font-size: 0.9rem;
+      color: #475569;
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+
+    .dialog-actions {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .dialog-btn {
+      background: #4f46e5;
+      color: white;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="device-container">
+    <!-- Step 4 - Scaffold & AppBar -->
+    <div class="app-bar">
+      <div class="app-bar-title">Student Profile</div>
+      <button class="icon-btn" onclick="showExperimentInfo()" title="Experiment Info">
+        <span class="material-icons">info_outline</span>
+      </button>
+    </div>
+
+    <!-- Main Application Body (Step 5 - Column) -->
+    <div class="app-body">
+      
+      <!-- Step 6 - Container Widget with Profile Information -->
+      <div class="profile-container">
+        <div class="avatar">
+          <span class="material-icons">person</span>
+        </div>
+        <div class="profile-header-tag">Student Profile</div>
+        <div class="student-name">Raj</div>
+        <div class="dept-name">Computer Science and Engineering</div>
+        <div class="lab-badge">Flutter Laboratory</div>
+      </div>
+
+      <!-- Step 7 - Row Widget with SpaceEvenly Icons -->
+      <div class="nav-card">
+        <div class="nav-row">
+          <div class="nav-item active" id="nav-home" onclick="selectNav('Home', 'nav-home')">
+            <span class="material-icons">home</span>
+            <span>Home</span>
+          </div>
+          <div class="nav-item" id="nav-profile" onclick="selectNav('Profile', 'nav-profile')">
+            <span class="material-icons">person</span>
+            <span>Profile</span>
+          </div>
+          <div class="nav-item" id="nav-settings" onclick="selectNav('Settings', 'nav-settings')">
+            <span class="material-icons">settings</span>
+            <span>Settings</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 8 - Card Widget -->
+      <div class="featured-card" onclick="openCourseModal('Flutter', '24CS2016', 'Mobile Application Development', 'book', '#4f46e5')">
+        <div class="list-tile">
+          <div class="tile-leading">
+            <span class="material-icons">book</span>
+          </div>
+          <div class="tile-content">
+            <div class="tile-title">Flutter</div>
+            <div class="tile-subtitle">Mobile Application Development</div>
+          </div>
+          <span class="material-icons tile-trailing">chevron_right</span>
+        </div>
+      </div>
+
+      <div class="section-heading">Enrolled Courses (ListView)</div>
+
+      <!-- Step 9 - Expanded ListView Widget -->
+      <div class="list-view-expanded">
+        
+        <div class="course-card" onclick="openCourseModal('Flutter', '24CS2016', 'Mobile Application Development', 'book', '#3b82f6')">
+          <div class="list-tile">
+            <div class="tile-leading" style="background:#dbeafe; color:#2563eb;">
+              <span class="material-icons">book</span>
+            </div>
+            <div class="tile-content">
+              <div class="tile-title">Flutter</div>
+              <div class="tile-subtitle">Mobile Application Development</div>
+            </div>
+            <span class="course-code-badge">24CS2016</span>
+          </div>
+        </div>
+
+        <div class="course-card" onclick="openCourseModal('Cloud Computing', '24CS2018', 'Distributed Systems & AWS', 'cloud', '#06b6d4')">
+          <div class="list-tile">
+            <div class="tile-leading" style="background:#cffafe; color:#0891b2;">
+              <span class="material-icons">cloud</span>
+            </div>
+            <div class="tile-content">
+              <div class="tile-title">Cloud Computing</div>
+              <div class="tile-subtitle">Distributed Systems & AWS</div>
+            </div>
+            <span class="course-code-badge">24CS2018</span>
+          </div>
+        </div>
+
+        <div class="course-card" onclick="openCourseModal('Programming', '24CS2010', 'Data Structures & Algorithms', 'code', '#a855f7')">
+          <div class="list-tile">
+            <div class="tile-leading" style="background:#f3e8ff; color:#9333ea;">
+              <span class="material-icons">code</span>
+            </div>
+            <div class="tile-content">
+              <div class="tile-title">Programming</div>
+              <div class="tile-subtitle">Data Structures & Algorithms</div>
+            </div>
+            <span class="course-code-badge">24CS2010</span>
+          </div>
+        </div>
+
+        <div class="course-card" onclick="openCourseModal('Web Technologies', '24CS2014', 'HTML, CSS & JavaScript', 'web', '#f97316')">
+          <div class="list-tile">
+            <div class="tile-leading" style="background:#ffedd5; color:#ea580c;">
+              <span class="material-icons">web</span>
+            </div>
+            <div class="tile-content">
+              <div class="tile-title">Web Technologies</div>
+              <div class="tile-subtitle">HTML, CSS & JavaScript</div>
+            </div>
+            <span class="course-code-badge">24CS2014</span>
+          </div>
+        </div>
+
+        <div class="course-card" onclick="openCourseModal('Database Management', '24CS2012', 'SQL & Relational Databases', 'storage', '#14b8a6')">
+          <div class="list-tile">
+            <div class="tile-leading" style="background:#ccfbf1; color:#0d9488;">
+              <span class="material-icons">storage</span>
+            </div>
+            <div class="tile-content">
+              <div class="tile-title">Database Management</div>
+              <div class="tile-subtitle">SQL & Relational Databases</div>
+            </div>
+            <span class="course-code-badge">24CS2012</span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- SnackBar Toast -->
+    <div id="snackbar" class="snackbar">Switched to Home tab</div>
+
+    <!-- Modal Dialog -->
+    <div id="modal" class="modal-overlay" onclick="closeModal(event)">
+      <div class="dialog-box" onclick="event.stopPropagation()">
+        <div class="dialog-header">
+          <span id="modal-icon" class="material-icons">book</span>
+          <div id="modal-title" class="dialog-title">Flutter</div>
+        </div>
+        <div class="dialog-body">
+          <strong>Course Code:</strong> <span id="modal-code">24CS2016</span><br>
+          <strong>Subject:</strong> <span id="modal-sub">Mobile Application Development</span><br>
+          <strong>Status:</strong> <span style="color:#16a34a; font-weight:600;">Enrolled & Active</span>
+        </div>
+        <div class="dialog-actions">
+          <button class="dialog-btn" onclick="closeModal()">Close</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    function selectNav(name, id) {
+      document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      showSnackBar('Switched to ' + name + ' tab');
+    }
+
+    function showSnackBar(msg) {
+      const sb = document.getElementById('snackbar');
+      sb.innerText = msg;
+      sb.classList.add('show');
+      setTimeout(() => {
+        sb.classList.remove('show');
+      }, 1500);
+    }
+
+    function openCourseModal(title, code, sub, icon, color) {
+      document.getElementById('modal-title').innerText = title;
+      document.getElementById('modal-code').innerText = code;
+      document.getElementById('modal-sub').innerText = sub;
+      const iconEl = document.getElementById('modal-icon');
+      iconEl.innerText = icon;
+      iconEl.style.color = color;
+      document.getElementById('modal').classList.add('open');
+    }
+
+    function closeModal() {
+      document.getElementById('modal').classList.remove('open');
+    }
+
+    function showExperimentInfo() {
+      openCourseModal(
+        'Experiment 1 Overview',
+        '24CS2016',
+        'Working with Widgets and Layouts: Container, Row, Column, Expanded, Card, and ListView.',
+        'flutter_dash',
+        '#4f46e5'
+      );
+    }
+  </script>
+</body>
+</html>
