@@ -1,0 +1,11 @@
+{
+    "name": "Student Profile - Experiment 1",
+    "short_name": "StudentProfile",
+    "start_url": ".",
+    "display": "standalone",
+    "background_color": "#0f172a",
+    "theme_color": "#6366f1",
+    "description": "Flutter Experiment 1 - Working with Widgets and Layouts",
+    "orientation": "portrait-primary",
+    "prefer_related_applications": false
+}
